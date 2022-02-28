@@ -7,12 +7,11 @@ from matplotlib.colors import LinearSegmentedColormap
 
 
 def df2table(data, col_width=1.8, row_height=0.4, font_size=14,
-             header_face_color='#3333B2', header_font_color='w',
-             row_colors=('#e6e6e6', 'w'), edge_color='w',
-             save_path=None, show_table=False, index_name=None,
-             title=None, date_format='%d-%b-%Y', rounding=None):
+           header_face_color='#3333B2', header_font_color='w',
+           row_colors=('#e6e6e6', 'w'), edge_color='w',
+           save_path=None, show_table=False, index_name=None,
+           title=None, date_format='%d-%b-%Y', rounding=None):
     """
-
     :param data: pandas.DataFrame
     :param col_width: width of the columns
     :param row_height: heigth of the rows
@@ -80,29 +79,27 @@ def df2table(data, col_width=1.8, row_height=0.4, font_size=14,
 
 
 def df2heatmap(data, show_table=False, figsize=(9, 9), nodes=None, colors=None, cmap='rwb', cbar=False,
-               fontsize=12, table_title=None, normalize='percentile', save_path=None, ax=None,
-               date_format='%d-%b-%Y'):
+               fontsize=12, table_title=None, normalize='percentile', save_path=None, ax=None):
     """
     Creates a heatmap table from a pandas dataframe. The heatmap color scale can be based on either the
     percentage of the value relative to the range or based on its percentile.
-    :param data: pandas.DataFrame, already sorted in the way you want to see it.
-    :param show_table: bool. If True, previews the table during runtime.
-    :param figsize: tuple with the dimensions of the figure.
-    :param nodes: list of the thresholds (float) to be passed to the matplotlib's colormap building tool.
-    :param colors: list of color names or codes (strings) to be passed to the matplotlib's colormap building tool.
-    :param cmap: str with name of colormap or matplolib.colormap object.
+    @param data: pandas.DataFrame, already sorted in the way you want to see it.
+    @param show_table: bool. If True, previews the table during runtime.
+    @param figsize: tuple with the dimensions of the figure.
+    @param nodes: list of the thresholds (float) to be passed to the matplotlib's colormap building tool.
+    @param colors: list of color names or codes (strings) to be passed to the matplotlib's colormap building tool.
+    @param cmap: str with name of colormap or matplolib.colormap object.
                  https://matplotlib.org/stable/gallery/color/colormap_reference.html
-    :param cbar: bool. If True, plots the colorbar on the figure.
-    :param fontsize: Fontsize for the text in the table.
-    :param table_title: str, title of the table. Its fontsize is 'fontsize' + 2
-    :param normalize: 'percentile' or 'range'. If 'percentile', the heatmap is independent for each column and
+    @param cbar: bool. If True, plots the colorbar on the figure.
+    @param fontsize: Fontsize for the text in the table.
+    @param table_title: str, title of the table. Its fontsize is 'fontsize' + 2
+    @param normalize: 'percentile' or 'range'. If 'percentile', the heatmap is independent for each column and
                       based on the percentile of the observation. If 'range', the heatmap is independent for
                       each column and based on the percentage of the observation relative to the maximum range.
-    :param save_path: str with the path to save the figure. File name must end with '.pdf' or '.png'.
-    :param ax: matplotlib.Axis object. Allows to pass an axis that already exists. Used to creat a figure
+    @param save_path: str with the path to save the figure. File name must end with '.pdf' or '.png'.
+    @param ax: matplotlib.Axis object. Allows to pass an axis that already exists. Used to creat a figure
                with multiple tables
-    :param date_format: format string for dates. Only used if 'data' has a pandas.DateTimeIndex.
-    :return: matplotlib.Figure and matplotlib.Axis objects that can still be manipulated before plotting.
+    @return: matplotlib.Figure and matplotlib.Axis objects that can still be manipulated before plotting.
     """
     # TODO heatmap based on the full dataframe and not independent for each column. Add 'percentile-all'
     #  and 'range-all' normalization methods.
@@ -114,9 +111,6 @@ def df2heatmap(data, show_table=False, figsize=(9, 9), nodes=None, colors=None, 
     myfont = {'fontname': 'Century Gothic'}
     rcParams['font.family'] = 'sans-serif'
     rcParams['font.sans-serif'] = ['Century Gothic']
-
-    # if isinstance(data.index, pd.DatetimeIndex):
-    #     data.index = data.index.strftime(date_format)
 
     if (nodes is not None) and (colors is not None):
         cmap = LinearSegmentedColormap.from_list("mycmap", list(zip(nodes, colors)))
@@ -170,16 +164,3 @@ def df2heatmap(data, show_table=False, figsize=(9, 9), nodes=None, colors=None, 
         plt.show()
 
     return fig, ax
-
-
-# TODO The example below should be removed before opening the pull request
-# ===== EXAMPLE =====
-df = pd.DataFrame(data={'Series A': [0, 1, 2, 3, 4],
-                        'Series B': [4, 3, 2, 1, 0]},
-                  index=pd.date_range('2021-01-01', periods=5, freq='M'))
-
-df2table(df, index_name='Index Name', title='This is the title', show_table=True)
-
-df2heatmap(df, table_title='This is the title', show_table=True,
-           nodes=[0.0, 0.2, 0.8, 1.0],
-           colors=['green', 'white', 'white', 'red'])
